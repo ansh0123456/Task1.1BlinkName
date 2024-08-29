@@ -1,68 +1,97 @@
-const int ledPin = LED_BUILTIN; // LED pin
-const int buttonPin = 2;        // Button pin
+// Define the pin for the built-in LED
+const int ledPin = LED_BUILTIN;
 
-// Morse code timing (milliseconds)
-const int dotTime = 200;
-const int dashTime = 600;
-const int symbolGap = 300;
-const int letterGap = 900;
-const int wordGap = 1500;
+// Define the pin for the button
+const int buttonPin = 2;
 
-// Morse code for "ANSH"
+// Morse code timing definitions (in milliseconds)
+const int dotTime = 200;        // Duration of a dot
+const int dashTime = 600;       // Duration of a dash
+const int symbolGap = 300;      // Gap between symbols in a letter
+const int letterGap = 900;      // Gap between letters in a word
+const int wordGap = 1500;       // Gap between words
+
+// Define the Morse code sequence for the word "ANSH"
 String morseCode[] = {".-", "-.", "...", "...."};
 
+// Variables to store the button state
 int buttonState = 0;
 int lastButtonState = 0;
 
 void setup() {
+  // Initialize the LED pin as an output
   pinMode(ledPin, OUTPUT);
+  
+  // Initialize the button pin as an input
   pinMode(buttonPin, INPUT);
 }
 
 void loop() {
+  // Read the current state of the button
   buttonState = digitalRead(buttonPin);
 
+  // Check if the button has just been pressed
   if (buttonState == HIGH && lastButtonState == LOW) {
+    // If the button is pressed, display the Morse code sequence
     displayMorse();
   }
 
+  // Save the current button state for the next loop iteration
   lastButtonState = buttonState;
 }
 
 void displayMorse() {
+  // Loop through each letter in the Morse code array
   for (int i = 0; i < 4; i++) {
     String letter = morseCode[i];
 
+    // Loop through each symbol (dot or dash) in the current letter
     for (int j = 0; j < letter.length(); j++) {
       if (letter[j] == '.') {
+        // Blink a dot if the symbol is a dot
         blinkDot();
       } else if (letter[j] == '-') {
+        // Blink a dash if the symbol is a dash
         blinkDash();
       }
 
+      // Pause between symbols
       delay(symbolGap);
 
+      // If the button is pressed during the display, stop and return
       if (digitalRead(buttonPin) == HIGH) {
         return;
       }
     }
 
+    // Pause between letters
     delay(letterGap);
   }
 
+  // Pause between words
   delay(wordGap);
 }
 
 void blinkDot() {
+  // Turn the LED on for the duration of a dot
   digitalWrite(ledPin, HIGH);
   delay(dotTime);
+  
+  // Turn the LED off
   digitalWrite(ledPin, LOW);
+  
+  // Pause after the dot
   delay(dotTime);
 }
 
 void blinkDash() {
+  // Turn the LED on for the duration of a dash
   digitalWrite(ledPin, HIGH);
   delay(dashTime);
+  
+  // Turn the LED off
   digitalWrite(ledPin, LOW);
+  
+  // Pause after the dash
   delay(dotTime);
 }
